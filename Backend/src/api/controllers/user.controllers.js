@@ -31,7 +31,7 @@ const register = async (req, res, next) => {
           .status(500)
           .json({ message: "Error al iniciar sesión después del registro." });
       }
-      return res.status(201).json({ message: "Success." , user: newUser});
+      return res.status(201).json({ message: "Success.", user: newUser });
     });
   });
 };
@@ -42,7 +42,6 @@ const login = (req, res, next) => {
   //* Utiliza la estrategia de autenticación local de Passport
   console.log(req.body);
   //* Extraemos la id del username para generar el toquen
-
 
   passport.authenticate("local", (err, user, info) => {
     //*el método de passport extrae el username y el poss
@@ -58,30 +57,39 @@ const login = (req, res, next) => {
     };
 
     //* Generamos un token JWT utilizando la función importada
-    const token = generateToken( payload.username);
+    const token = generateToken(payload.username);
     req.login(user, (loginErr) => {
       if (loginErr) {
         return res.status(500).json({ message: "Error al iniciar sesión." });
       }
-//* Si OK, devolvemos el user y el token
-      return res
-        .status(200)
-        .json({
-          message: "Inicio de sesión exitoso.",
-          user: user,
-          token: token,
-        });
+      //* Si OK, devolvemos el user y el token
+      return res.status(200).json({
+        message: "Inicio de sesión exitoso.",
+        user: user,
+        token: token,
+      });
     });
   })(req, res, next);
 };
 
+//?-----------LOG-OUT USER CONTROLLER ---------- */
+const logOut = (req, res, next) => {
+  //* Recuerda que la función de logout de passport requiere de un callback
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+
+    req.session.logoutMessage = "Session closed";
+    res.status(200).json({ message: "¡Has cerrado sesión exitosamente!" });
+  });
+};
 //?-----------UPDATE USER CONTROLLER ---------- */
 
 //* Updated por ID, todos los campos modificables
-const updateUser = async(req, res, next)=>{
-
+const updateUser = async (req, res, next) => {
   try {
-     await User.syncIndexes();
+    await User.syncIndexes();
     const { id } = req.params;
 
     //* Verificar si la ID del user es válida
@@ -99,19 +107,32 @@ const updateUser = async(req, res, next)=>{
     if (!updateUser) {
       return res.status(404).json({ message: "User not found" });
     }
-//* Devolvemos el user actualizado y mensaje de confirmación
-    return res.status(200).json({message:"User updated", user: updatedUser });
+    //* Devolvemos el user actualizado y mensaje de confirmación
+    return res.status(200).json({ message: "User updated", user: updatedUser });
   } catch (error) {
     return next(error);
   }
+};
 
+//?-----------GET ALL USER------------
 
-
-}
-
+const getAllUser = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    //*Si hay, devolvemos 200
+    if (users) {
+      return res.status(200).json({ users });
+    }
+    //* Si no hay users
+    if (!users) {
+      return res.status(404).json({ message: "No users in DB" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener los usuarios" });
+  }
+};
 
 //?-----------USER  DELETE BY ID------------
-
 
 const deleteUserByID = async (req, res, next) => {
   const { id } = req.params;
@@ -127,9 +148,11 @@ const deleteUserByID = async (req, res, next) => {
 
     //* Eliminamos el usuario de la base de datos
     const deletedUser = await User.findByIdAndDelete(id);
-//*Si OK, devolvemos confirmación
+    //*Si OK, devolvemos confirmación
     if (deletedUser) {
-      return res.status(200).json({ message: "User removed from the DB", user:user });
+      return res
+        .status(200)
+        .json({ message: "User removed from the DB", user: user });
     } else {
       return res.status(404).json({ message: "User not found" });
     }
@@ -138,4 +161,4 @@ const deleteUserByID = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, updateUser, deleteUserByID };
+module.exports = { register, login, updateUser, deleteUserByID, getAllUser, logOut, };
