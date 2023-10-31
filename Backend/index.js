@@ -8,7 +8,31 @@ const userRoutes = require("./src/api/routes/user.routes");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 
-dotenv.config();
+
+dotenv.config()
+//* CONFIGURACIÓN Y EXPORTS PARA EXTRAER TOKEN CON PASSPORT
+
+const secret = process.env.JWT_SECRET
+const passportJWT = require('passport-jwt');
+const ExtractJwt = passportJWT.ExtractJwt;
+const JwtStrategy = passportJWT.Strategy;
+
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: secret // 
+};
+
+const jwtStrategy = new JwtStrategy(jwtOptions, (jwtPayload, done) => {
+  // Aquí debes implementar la lógica para verificar el token y buscar al usuario en la base de datos si es necesario
+  // jwtPayload contiene la información decodificada del token
+  // Llama a done(err, user) con el usuario si la autenticación tiene éxito
+  // Llama a done(null, false) si la autenticación falla
+});
+
+passport.use(jwtStrategy);
+
+
+
 
 //* Declaración del puerto
 const PORT = 8490;

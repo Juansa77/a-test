@@ -1,63 +1,141 @@
-const User = require("../models/user.model")
-const passport = require('passport');
+const User = require("../models/user.model");
+const passport = require("passport");
+const { generateToken } = require("../../utils/token");
 
-
-
-//*----REGISTER USER CONTROLLER------------
+//?----REGISTER USER CONTROLLER------------
 
 const register = async (req, res, next) => {
-    const {  email, password, username } = req.body;
-    await User.syncIndexes();
-  console.log
-    //* Validar que se proporcionen todos los campos necesarios
-    if ( !email || !password || !username) {
-      return res.status(400).json({ message: 'All fields are required.' });
+  const { email, password, username } = req.body;
+  await User.syncIndexes();
+  console.log;
+  //* Validar que se proporcionen todos los campos necesarios
+  if (!email || !password || !username) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  //* Crear un nuevo usuario: el password lo gestiona passport
+  const newUser = new User({ username, email });
+
+  //* Registrar al usuario con Passport y el método `register` de Passport-Local-Mongoose
+  User.register(newUser, password, (err, user) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Error al registrar el usuario." });
     }
-  
-    //* Crear un nuevo usuario: el password lo gestiona passport
-    const newUser = new User({ username, email });
-  
-    //* Registrar al usuario con Passport y el método `register` de Passport-Local-Mongoose
-    User.register(newUser, password, (err, user) => {
-      if (err) {
-        return res.status(500).json({ message: 'Error al registrar el usuario.' });
+
+    //* LOGIN DESPUÉS DE REGISTRO EXITOSO
+    req.login(user, (loginErr) => {
+      if (loginErr) {
+        return res
+          .status(500)
+          .json({ message: "Error al iniciar sesión después del registro." });
       }
-    
-      //* LOGIN DESPUÉS DE REGISTRO EXITOSO
-      req.login(user, (loginErr) => {
-        if (loginErr) {
-          return res.status(500).json({ message: 'Error al iniciar sesión después del registro.' });
-        }
-        return res.status(201).json({ message: 'Success.' });
-      });
-    })
-  };
+      return res.status(201).json({ message: "Success." , user: newUser});
+    });
+  });
+};
+
+//?-----------LOGIN USER CONTROLLER ---------- */
+
+const login = (req, res, next) => {
+  //* Utiliza la estrategia de autenticación local de Passport
+  console.log(req.body);
+  //* Extraemos la id del username para generar el toquen
 
 
-  const login = (req, res, next) => {
-    //* Utiliza la estrategia de autenticación local de Passport
-    console.log(req.body)
+  passport.authenticate("local", (err, user, info) => {
+    //*el método de passport extrae el username y el poss
 
-    passport.authenticate('local', (err, user, info) => {
-        //*el método de passport extrae el username y el poss
-        console.log(user.username)
-      if (err) {
-        return res.status(500).json({ message: 'Error en la autenticación.' });
+    if (err) {
+      return res.status(500).json({ message: "Error en la autenticación." });
+    }
+    if (!user) {
+      return res.status(401).json({ message: "Credenciales incorrectas." });
+    }
+    const payload = {
+      username: user.username,
+    };
+
+    //* Generamos un token JWT utilizando la función importada
+    const token = generateToken( payload.username);
+    req.login(user, (loginErr) => {
+      if (loginErr) {
+        return res.status(500).json({ message: "Error al iniciar sesión." });
       }
-      if (!user) {
-        return res.status(401).json({ message: 'Credenciales incorrectas.' });
-      }
-  
-      // Inicia sesión al usuario
-      req.login(user, (loginErr) => {
-        if (loginErr) {
-          return res.status(500).json({ message: 'Error al iniciar sesión.' });
-        }
-  
-        return res.status(200).json({ message: 'Inicio de sesión exitoso.', user: user });
-      });
-    })(req, res, next);
-  };
+//* Si OK, devolvemos el user y el token
+      return res
+        .status(200)
+        .json({
+          message: "Inicio de sesión exitoso.",
+          user: user,
+          token: token,
+        });
+    });
+  })(req, res, next);
+};
+
+//?-----------UPDATE USER CONTROLLER ---------- */
+
+//* Updated por ID, todos los campos modificables
+const updateUser = async(req, res, next)=>{
+
+  try {
+     await User.syncIndexes();
+    const { id } = req.params;
+
+    //* Verificar si la ID del user es válida
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    // Actualizar el USER con los datos proporcionados en req.body
+    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+
+    // Verificar si se actualizó correctamente
+    if (!updateUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+//* Devolvemos el user actualizado y mensaje de confirmación
+    return res.status(200).json({message:"User updated", user: updatedUser });
+  } catch (error) {
+    return next(error);
+  }
 
 
-  module.exports= {register, login}
+
+}
+
+
+//?-----------USER  DELETE BY ID------------
+
+
+const deleteUserByID = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    //* Buscamos el user por id
+    const user = await User.findById(id);
+
+    //* Si no hay, devolvemos error
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    //* Eliminamos el usuario de la base de datos
+    const deletedUser = await User.findByIdAndDelete(id);
+//*Si OK, devolvemos confirmación
+    if (deletedUser) {
+      return res.status(200).json({ message: "User removed from the DB", user:user });
+    } else {
+      return res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { register, login, updateUser, deleteUserByID };
