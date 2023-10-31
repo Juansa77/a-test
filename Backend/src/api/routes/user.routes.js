@@ -14,7 +14,7 @@ const isAuthToken = require("../../middlewares/isAuthToken.middleware");
 userRoutes.post("/register", register);
 
 //?------Ruta  LOGIN--------
-userRoutes.get("/login", login);
+userRoutes.post("/login", login);
 
 //?------Ruta  UPDATE --------
 userRoutes.patch("/update/:id", isAuthToken, updateUser);

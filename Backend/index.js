@@ -7,6 +7,7 @@ const User = require("./src/api/models/user.model");
 const userRoutes = require("./src/api/routes/user.routes");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+const passportConfig = require("./src/api/config/passport.config");
 
 
 dotenv.config()
@@ -14,6 +15,7 @@ dotenv.config()
 
 const secret = process.env.JWT_SECRET
 const passportJWT = require('passport-jwt');
+
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
 
@@ -23,10 +25,7 @@ const jwtOptions = {
 };
 
 const jwtStrategy = new JwtStrategy(jwtOptions, (jwtPayload, done) => {
-  // Aquí debes implementar la lógica para verificar el token y buscar al usuario en la base de datos si es necesario
-  // jwtPayload contiene la información decodificada del token
-  // Llama a done(err, user) con el usuario si la autenticación tiene éxito
-  // Llama a done(null, false) si la autenticación falla
+
 });
 
 passport.use(jwtStrategy);
@@ -50,16 +49,19 @@ app.use(
   })
 );
 
-//*----CONFIGURACIÓN DE PASSPORT---------
+//*----INICIALIZACIÓN DE  PASSPORT---------
 app.use(passport.initialize());
 app.use(passport.session());
 
+passportConfig()
+/*
 //*Almacenamiento en la sesión
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 //* Estrategia de verificación local
 passport.use(new LocalStrategy(User.authenticate()));
 
+*/
 //* Iniciamos la conexión a la DB
 connect();
 

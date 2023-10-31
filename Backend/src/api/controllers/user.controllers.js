@@ -31,7 +31,12 @@ const register = async (req, res, next) => {
           .status(500)
           .json({ message: "Error al iniciar sesión después del registro." });
       }
-      return res.status(201).json({ message: "Success.", user: newUser });
+      //*Ruta de redirección después del login
+     // res.redirect('http://localhost:8490/api/v1/users/getusers');
+     //*SALVAR SESSION AL HACER EL LOGIN
+      req.session.save(()=>{
+        return res.status(201).json({ message: "Success.", user: newUser, redirectTo: "/users" });
+      })
     });
   });
 };
@@ -63,6 +68,7 @@ const login = (req, res, next) => {
         return res.status(500).json({ message: "Error al iniciar sesión." });
       }
       //* Si OK, devolvemos el user y el token
+      //res.redirect('http://localhost:8490/api/v1/users/getusers');
       return res.status(200).json({
         message: "Inicio de sesión exitoso.",
         user: user,
@@ -121,7 +127,7 @@ const getAllUser = async (req, res, next) => {
     const users = await User.find();
     //*Si hay, devolvemos 200
     if (users) {
-      return res.status(200).json({ users });
+      return res.status(200).json(users );
     }
     //* Si no hay users
     if (!users) {
@@ -161,4 +167,11 @@ const deleteUserByID = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, updateUser, deleteUserByID, getAllUser, logOut, };
+module.exports = {
+  register,
+  login,
+  updateUser,
+  deleteUserByID,
+  getAllUser,
+  logOut,
+};
