@@ -2,8 +2,6 @@ const express = require("express");
 const dotenv = require("dotenv");
 const connect = require("./src/utils/db");
 const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const User = require("./src/api/models/user.model");
 const userRoutes = require("./src/api/routes/user.routes");
 const session = require("express-session");
 const bodyParser = require("body-parser");
@@ -38,7 +36,7 @@ const PORT = 8490;
 //* Creamos la APP de express
 const app = express();
 
-//* CONFIGURACIÓN DE PASSPORT SESSIÓN
+//* CONFIGURACIÓN DE PASSPORT SESSIÓN--------
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(

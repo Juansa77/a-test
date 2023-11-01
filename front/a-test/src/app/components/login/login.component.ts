@@ -12,11 +12,12 @@ import { AuthService } from 'src/app/auth.service';
 export class LoginComponent {
 
   loginForm: FormGroup;
+  showErrorMessage: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {
     this.loginForm = new FormGroup({
-      username: new FormControl('', [Validators.required]),
-      password: new FormControl('', Validators.required)
+      username: new FormControl('', [Validators.required, Validators.minLength(2)]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)])
     });
   }
 
@@ -36,6 +37,11 @@ export class LoginComponent {
           console.error('Inicio de sesión fallido', error);
         }
       );
+    }
+
+    else{
+      this.showErrorMessage = true;
+      console.log("loquesea")
     }
   }
 }

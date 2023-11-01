@@ -2,8 +2,8 @@
 <nav>
   <ul>
     <li><a routerLink="/register" >{{ isLoggedIn ? 'Añadir usuario' : 'Registro' }}</a></li>
-    <li><a routerLink="/login" *ngIf="!isLoggedIn">Iniciar sesión</a></li>
-    <li><a (click)="logout()" *ngIf="isLoggedIn">Cerrar sesión</a></li>
+    <li *ngIf="!isLoggedIn"><a routerLink="/login" >Iniciar sesión</a></li>
     <li><a routerLink="/users" *ngIf="isLoggedIn">Users</a></li>
+    <li *ngIf="isLoggedIn"><a (click)="logout()" >Cerrar sesión</a></li>
   </ul>
 </nav>

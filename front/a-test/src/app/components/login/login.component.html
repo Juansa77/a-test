@@ -1,15 +1,30 @@
 <div class="login-container">
   <h2>Iniciar sesión</h2>
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-container-login">
+  <form
+    [formGroup]="loginForm"
+    (ngSubmit)="onSubmit()"
+    class="form-container-login"
+  >
     <div class="form-group">
       <label for="username">Nombre de usuario</label>
-      <input type="text" id="username" formControlName="username" placeholder="Nombre de usuario" />
-
+      <input
+        type="text"
+        id="username"
+        formControlName="username"
+        placeholder="Nombre de usuario"
+      />
 
       <label for="password">Contraseña</label>
-      <input type="password" id="password" formControlName="password" placeholder="Contraseña" />
-
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        placeholder="Contraseña"
+      />
     </div>
     <button type="submit" [disabled]="!loginForm.valid">Iniciar sesión</button>
+    <p *ngIf="showErrorMessage" class="error-message">
+      Por favor, completa los campos correctamente.
+    </p>
   </form>
 </div>

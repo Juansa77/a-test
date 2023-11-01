@@ -50,7 +50,7 @@ export class RegisterComponent {
           if (this.isLoggedIn == true) {
             this.router.navigate(['/users']);
           } else {
-            this.router.navigate(['/login']);
+            this.router.navigate([""]);
           }
         },
         (error) => {

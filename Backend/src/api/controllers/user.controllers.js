@@ -55,7 +55,7 @@ const login = (req, res, next) => {
       return res.status(500).json({ message: "Error en la autenticación." });
     }
     if (!user) {
-      return res.status(401).json({ message: "Credenciales incorrectas." });
+      return res.status(401).json("Credenciales incorrectas." );
     }
     const payload = {
       username: user.username,
