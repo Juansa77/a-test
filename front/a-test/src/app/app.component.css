@@ -1,10 +1,78 @@
-.app-container{
+.app-container {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
   width: 100vw;
   display: flex;
   flex-direction: column;
-justify-items:  center;
-align-items: center;
-align-content: center;
-justify-content: center;
-gap:10vh
+  min-height: 100vh;
+  align-items: center;
+gap:5vh;
+}
+
+
+h1 {
+  font-size: 24px;
+  color: #333;
+}
+
+p {
+  font-size: 16px;
+  color: #666;
+}
+
+
+button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+
+form {
+  margin: 20px 0;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+a {
+  text-decoration: none;
+  color: #dd8bad56;
+  font-family: 'Roboto', sans-serif;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+}
+
+p {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
 }

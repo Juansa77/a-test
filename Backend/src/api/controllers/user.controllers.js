@@ -94,6 +94,8 @@ const logOut = (req, res, next) => {
 
 //* Updated por ID, todos los campos modificables
 const updateUser = async (req, res, next) => {
+  console.log(req.params)
+  console.log(req.body)
   try {
     await User.syncIndexes();
     const { id } = req.params;
@@ -117,6 +119,29 @@ const updateUser = async (req, res, next) => {
     return res.status(200).json({ message: "User updated", user: updatedUser });
   } catch (error) {
     return next(error);
+  }
+};
+
+
+
+//?-----------GET USER BY ID--------------
+
+const getUserByID = async (req, res, next) => {
+  console.log("entra");
+  const { id } = req.params;
+  console.log(id);
+
+  try {
+    const user = await User.findById(id)
+    console.log(user);
+
+    if (user) {
+      return res.status(200).json(user);
+    } else {
+      return res.status(404).json("User not found");
+    }
+  } catch (error) {
+    res.status(500).json(error);
   }
 };
 
@@ -174,4 +199,5 @@ module.exports = {
   deleteUserByID,
   getAllUser,
   logOut,
+  getUserByID,
 };

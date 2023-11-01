@@ -5,7 +5,7 @@ const {
   login,
   updateUser,
   deleteUserByID,
-  getAllUser, logOut,
+  getAllUser, logOut, getUserByID,
 } = require("../controllers/user.controllers");
 const isAuth = require("../../middlewares/isAuth.middleware");
 const isAuthToken = require("../../middlewares/isAuthToken.middleware");
@@ -24,6 +24,9 @@ userRoutes.delete("/delete/:id", isAuthToken, deleteUserByID);
 
 //?------Ruta  GET ALL USER--------
 userRoutes.get("/getusers/", isAuthToken, getAllUser);
+
+//?------Ruta  GET USER--------
+userRoutes.get("/userdetail/:id", isAuthToken, getUserByID);
 
 //?------- Ruta para el logout
 userRoutes.get("/logout", isAuthToken, logOut);

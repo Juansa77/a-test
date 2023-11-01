@@ -1,0 +1,56 @@
+.login-container {
+  background-color: #007BFF; /* Color de fondo para el contenedor */
+  color: #fff;
+  padding: 20px;
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  width: 20vw;
+  max-height: min-content;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+}
+
+.form-group {
+  background-color: #275586; /* Color de fondo que destaca */
+  color: #fff;
+  padding: 20px;
+
+  width: 10vw;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+}
+
+input {
+  display: block;
+  margin: 10px 0;
+  padding: 8px;
+  width: 100%;
+  border: none;
+  border-radius: 4px;
+  background-color: #fff; /* Color de fondo para los campos de entrada */
+  color: #000; /* Texto en color negro */
+}
+
+button {
+  display: block;
+  margin: 10px 0;
+  padding: 10px 20px;
+  background-color: #007BFF; /* Color de fondo para el botón */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3; /* Cambio de color al pasar el ratón sobre el botón */
+}
+
+.form-container-login{
+  display: flex;
+  flex-direction: column;
+}

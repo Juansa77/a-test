@@ -1,7 +1,12 @@
+<div class="listelement-container">
+<div class="titlelist-container"><h2 class="">User list</h2></div>
 
-<h2>User list</h2>
-
-<div *ngFor="let user of users">
-  <div>Username: {{ user.username }} - Email: {{ user.email }}</div>
-  <hr>
+<div class="userlist-container">
+  <div *ngFor="let user of users" class="user-card">
+    <a [routerLink]="['/userdetail', user._id]">
+      <p>Username: {{ user.username }}</p>
+      <p>Email: {{ user.email }}</p>
+    </a>
+  </div>
+</div>
 </div>

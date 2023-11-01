@@ -1,12 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,  private router:Router) { }
+
+  //*Subscribirse a los cambios en el booleano
+  public authStateSubject = new Subject<boolean>();
+  notifyAuthStateChange(isAuthenticated: boolean) {
+    this.authStateSubject.next(isAuthenticated);
+  }
 
   //* Método para hacer el login en el la app
   login(username: string, password: string) {
@@ -48,5 +57,6 @@ export class AuthService {
   //* TO-DO EN EL BACKEND
   logout() {
     localStorage.removeItem('userInfo');
+    this.router.navigate(['']);
   }
 }

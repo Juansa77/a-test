@@ -1,0 +1,52 @@
+.listelement-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titlelist-container{
+  background-color: #4299f7;
+  display: flex;
+  width:55vw;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: azure;
+  border-radius: 8px;
+}
+
+.user-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin: 16px 0;
+  transition: box-shadow 0.3s;
+  display: flex;
+  width: 25vw;
+flex-direction: column;
+  height: 10vh;
+  gap: 2vh;
+  align-content: center;
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
+}
+
+.user-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor:pointer;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.userlist-container {
+  display: flex;
+  max-width: 55vw;
+  min-width:55vw;
+  flex-wrap: wrap;
+
+  justify-content: center;
+  justify-items: center;
+  gap: 1vh;
+}

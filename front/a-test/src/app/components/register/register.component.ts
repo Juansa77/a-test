@@ -1,9 +1,10 @@
+
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
-
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -11,42 +12,51 @@ import { AuthService } from 'src/app/auth.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
+  isLoggedIn = false;
+  private authStateSubscription: Subscription;
 
-
-  //*Instanciamos un nuevo registro con FormGroup del core de Angular
   registrationForm: FormGroup;
-  //* inyectamos la dependencia de la variable HTTP y Router de los datos que va a tomar de Httpclient
-  constructor(private http: HttpClient, private router:Router) {
-    //* Definimos la formgroup con las validaciones de cada campo
+
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private authService: AuthService
+  ) {
     this.registrationForm = new FormGroup({
-      username: new FormControl("", Validators.required),
-      email: new FormControl("", [Validators.required, Validators.email]),
-      password: new FormControl("", [Validators.required, Validators.minLength(6)])
+      username: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     });
+
+    this.authStateSubscription = this.authService.authStateSubject.subscribe(
+      (isAuthenticated) => {
+        this.isLoggedIn = isAuthenticated;
+      }
+    );
+    const token = this.authService.getToken();
+    this.isLoggedIn = !!token;
+
   }
-  //* Función al hacer register; toma los datos del form group
+
   registerUser() {
     if (this.registrationForm.valid) {
       const userData = this.registrationForm.value;
 
-      //* URL DEL BACKEND
-      const backendUrl:string = 'http://localhost:8490/api/v1/users/register';
-//*Usamos HTTP PARA ENVIAR LOS DATOS EN LA URL
+      const backendUrl: string = 'http://localhost:8490/api/v1/users/register';
+
       this.http.post(backendUrl, userData).subscribe(
         (response) => {
-          //* register ok
           console.log('Registro exitoso', response);
-          this.router.navigate(['/users']);
+          if (this.isLoggedIn == true) {
+            this.router.navigate(['/users']);
+          } else {
+            this.router.navigate(['/login']);
+          }
         },
         (error) => {
-          //* Error register
           console.error('Error en el registro', error);
         }
       );
-
     }
   }
-
-
-
 }

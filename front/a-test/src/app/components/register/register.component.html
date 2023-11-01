@@ -1,5 +1,6 @@
 
 <form class="form-group" [formGroup]="registrationForm" (ngSubmit)="registerUser()">
+  <h3>New user</h3>
   <input type="text" formControlName="username" placeholder="Nombre">
   <input type="email" formControlName="email" placeholder="Correo electrónico">
   <input type="password" formControlName="password" placeholder="Contraseña">
